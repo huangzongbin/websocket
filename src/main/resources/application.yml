@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: websocket
+  activemq:
+    broker-url: tcp://172.2.10.21:61616
+    password: admin
+    user: admin
+
+server:
+  port: 8199
+  servlet:
+    context-path: /websocket

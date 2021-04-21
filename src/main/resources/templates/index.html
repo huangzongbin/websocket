@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Title</title>
+</head>
+<body>
+姓名：<input type="text" name="name" id="name">
+    <div id="getMsg"> 初始化信息！</div>
+    <button type="button" onclick="send()">发送信息</button>
+</body>
+<script type="text/javascript">
+
+
+
+    var websocket = null;
+
+    if('WebSocket' in window){
+        connectWebsocket();
+        console.log("link success")
+    }else{
+        alert('Not support websocket')
+    }
+
+
+    /*$(function () {
+        connectWebsocket();
+    });*/
+
+    function connectWebsocket() {
+
+        var ishttps ="https"==document.location.protocol? true:false;
+        var agreement = "ws";
+        if(ishttps){
+            agreement = "wss";
+        }
+       //  websocket = new WebSocket(agreement+"://"+getProjectPath()+":8199/ws/testSocket");
+        websocket = new WebSocket(agreement+"://localhost:8199/websocket/ws/testSocket?userId="+1);
+
+        //打开websocket的时候回调方法
+        websocket.onopen= function () {
+            console.log("开始了！");
+        }
+
+        // 关闭 websocket回调方法
+        websocket.onclose = function () {
+            console.log("关闭链接！");
+        }
+
+        // 接收消息
+        websocket.onmessage =function (msg) {
+            console.log("接收信息");
+            if(msg !=null && msg.data !=''){
+                var data = msg.data;
+               document.getElementById("getMsg").innerText=data;
+            }
+        }
+    }
+
+    function send() {
+        var name = document.getElementById('name').value;
+        var text = {};
+        text.userId = "1";
+        text.msg= name+"发送了websocket信息";
+        websocket.send(JSON.stringify(text));
+    }
+
+    function closeWebsocket() {
+        if(websocket !=null){
+            websocket.close();
+        }
+    }
+
+    function getProjectPath() {
+        var local = window.location;
+        var contextPath = local.pathname.split("/")[1];
+        var basePath = local.host + "/" + contextPath;
+        return contextPath;
+    };
+</script>
+
+</html>
